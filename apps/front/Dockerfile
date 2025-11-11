@@ -25,6 +25,8 @@ RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 ENV NODE_ENV=production
+# Reinstall with scripts enabled to build native modules (bcrypt, etc.)
+RUN pnpm install --frozen-lockfile
 RUN pnpm build
 RUN pnpm prune --prod
 
