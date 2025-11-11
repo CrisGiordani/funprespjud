@@ -18,8 +18,6 @@ services:
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       DATABASE_AMBIENTE: ${DATABASE_AMBIENTE}
       DATABASE_URL: ${DATABASE_URL}
-      FRONT_COMMAND: ${FRONT_COMMAND:-node server.js}
-    command: ${FRONT_COMMAND:-node server.js}
     volumes:
       - /app/node_modules
       - /app/.next
