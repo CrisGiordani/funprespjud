@@ -29,7 +29,7 @@ ENV CI=true
 # Reinstall with scripts enabled to build native modules (bcrypt, etc.)
 RUN pnpm install --frozen-lockfile
 RUN pnpm build
-RUN pnpm prune --prod
+RUN pnpm prune --prod --ignore-scripts
 
 FROM node:20-bookworm-slim AS runner
 
