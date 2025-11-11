@@ -1,0 +1,25 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Garantir que o header Authorization seja passado
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+    
+    # Regras de rewrite para o Symfony
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Remove TODOS os headers CORS - deixa o Symfony/nelmio_cors gerenciar completamente
+<IfModule mod_headers.c>
+    Header unset Access-Control-Allow-Origin
+    Header unset Access-Control-Allow-Methods
+    Header unset Access-Control-Allow-Headers
+    Header unset Access-Control-Allow-Credentials
+    Header unset Access-Control-Expose-Headers
+    Header unset Access-Control-Max-Age
+</IfModule>
+
+# Configuração específica para o header Authorization
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1

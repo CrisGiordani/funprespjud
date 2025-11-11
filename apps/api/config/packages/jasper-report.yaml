@@ -1,0 +1,6 @@
+sigedi_jasper_report:
+    host: '%env(SIGEDI_JASPER_REPORT_HOST)%'
+    username: '%env(SIGEDI_JASPER_REPORT_USERNAME)%'
+    password: '%env(SIGEDI_JASPER_REPORT_PASSWORD)%'
+    org_id: '%env(SIGEDI_JASPER_REPORT_ORGID)%'
+    timeout: 30 

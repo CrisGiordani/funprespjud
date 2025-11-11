@@ -1,0 +1,165 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    version_api: "1"
+    participants_private_directory: "%kernel.project_dir%/var/uploads/avatares/"
+    app.encryption_key: "%env(APP_ENCRYPTION_KEY)%"
+    app.encryption_iv: "%env(APP_ENCRYPTION_IV)%"
+    portal.database.name: "%env(PORTAL_DATABASE_NAME)%"
+    trust.database.name: "%env(TRUST_DATABASE_NAME)%"
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: "../src/"
+        exclude:
+            - "../src/DependencyInjection/"
+            - "../src/Entity/"
+            - "../src/Kernel.php"
+
+    # Repository configuration
+    App\Repository\Iris\App\PerfilInvestimentoRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\PerfilInvestimento
+            - iris
+
+    App\Repository\Iris\App\CampanhaRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\Campanha
+            - iris
+
+    App\Repository\Iris\App\PerfilInvestimentoAlteracaoRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\PerfilInvestimentoAlteracao
+            - iris
+
+    App\Repository\Iris\App\QuestinarioRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\Questinario
+            - iris
+
+    App\Repository\Iris\App\BlocoRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\Bloco
+            - iris
+
+    App\Repository\Iris\App\PerguntaRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\Pergunta
+            - iris
+
+    App\Repository\Iris\App\AlternativaRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\Alternativa
+            - iris
+
+    App\Repository\Iris\App\QuestionarioRespostaRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\QuestionarioResposta
+            - iris
+
+    App\Repository\Iris\App\HistoricoRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\Historico
+            - iris
+
+    App\Repository\Iris\App\StatusHistoricoRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\StatusHistorico
+            - iris
+
+    App\Repository\Iris\Core\DocumentoRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\Core\Documento
+            - iris
+
+    App\Repository\Iris\App\PerfilRecomendadoRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\App\PerfilRecomendado
+            - iris
+
+    App\Repository\Iris\Core\CobrancaRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\Core\Cobranca
+            - iris
+
+    App\Repository\Iris\Core\ParticipanteDiferencaPatrimonioLogRepository:
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - App\Entity\Iris\Core\ParticipanteDiferencaPatrimonioLog
+            - iris
+
+    App\Service\Iris\Core\CobrancaService:
+        arguments:
+            $cobrancaRepository: '@App\Repository\Iris\Core\CobrancaRepository'
+
+    # Jasper Service
+    App\Service\Jasper\JasperService:
+        arguments:
+            $reportService: '@Sigedi\JasperReportBundle\ReportService'
+
+    # WebDAV Service
+    App\Service\Storage\WebDAV\WebDAVService:
+        arguments:
+            $webdavUrl: "%env(WEBDAV_URL)%"
+            $username: "%env(WEBDAV_USERNAME)%"
+            $password: "%env(WEBDAV_PASSWORD)%"
+            $ocsApiUrl: "%env(WEBDAV_OCS_SHARE_API)%"
+
+    App\EventListener\RouteCpfEncryptionListener:
+        tags:
+            - { name: "doctrine.orm.entity_listener" }
+
+    # JWT Attribute Listener
+    App\EventListener\JwtAttributeListener:
+        tags:
+            - { name: "kernel.event_subscriber" }
+
+    # Locale Listener - garante que locale esteja sempre definido
+    App\EventListener\LocaleListener:
+        arguments:
+            $defaultLocale: 'pt_BR'
+        tags:
+            - { name: "kernel.event_subscriber" }
+
+    App\Service\Cpf\CpfEncryptionService:
+        arguments:
+            $cipherKey: "%app.encryption_key%"
+            $iv: "%app.encryption_iv%"
+
+    # Trust Contribuicao Repository
+    App\Repository\Trust\Contribuicao\TrustContribuicaoRepository:
+        arguments:
+            $portalDatabaseName: '%portal.database.name%'
+            $trustDatabaseName: '%trust.database.name%'
+
+    # Trust Extrato Repository
+    App\Repository\Trust\Extrato\TrustExtratoRepository:
+        arguments:
+            $portalDatabaseName: '%portal.database.name%'
+
+    # Trust Simulador Repository
+    App\Repository\Trust\Simulador\TrustSimuladorRepository:
+        arguments:
+            $trustDatabaseName: '%trust.database.name%'

@@ -1,0 +1,27 @@
+services:
+  front_next:
+    build:
+      context: .
+      target: ${FRONT_BUILD_TARGET:-runner}
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+    container_name: front_next
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+      NEXT_PUBLIC_SYMFONY_APP_URL: ${NEXT_PUBLIC_SYMFONY_APP_URL}
+      SYMFONY_API_INTERNAL_URL: http://api_symfony:80/api/v1
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      DATABASE_AMBIENTE: ${DATABASE_AMBIENTE}
+      DATABASE_URL: ${DATABASE_URL}
+      FRONT_COMMAND: ${FRONT_COMMAND:-node server.js}
+    command: ${FRONT_COMMAND:-node server.js}
+    volumes:
+      - /app/node_modules
+      - /app/.next
+    # Volume mount condicional - só monta se FRONT_VOLUME_SOURCE estiver definido e não vazio
+    # Isso é feito via extensão no docker-compose principal quando necessário

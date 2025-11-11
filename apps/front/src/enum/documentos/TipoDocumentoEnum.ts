@@ -1,0 +1,5 @@
+export enum TipoDocumentoEnum {
+  CONSELHO_DELIBERATIVO = 1,
+  CONSELHO_FISCAL = 2,
+  DIRETORIA_EXECUTIVA = 3
+}

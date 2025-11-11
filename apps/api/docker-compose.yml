@@ -1,0 +1,24 @@
+services:
+  api_symfony:
+    build:
+      context: .
+    container_name: api_symfony
+    ports:
+      - "8000:80"
+    env_file:
+      - .env
+    environment:
+      APP_ENV: prd
+      DATABASE_URL: "mssql://iris_dev:irisdev123@172.30.1.229:1433/TRUST_DEV?charset=UTF-8&driverOptions[TrustServerCertificate]=1"
+      Iris_DATABASE_URL: "mssql://iris_dev:irisdev123@172.30.1.229:1433/IRIS_DEV?charset=UTF-8&driverOptions[TrustServerCertificate]=1&schema=IRIS_DEV.dbo"
+      PORTAL_DATABASE_NAME: "PORTAL"
+      TRUST_DATABASE_NAME: "TRUST"
+      JWT_HS256_SECRET: "${JWT_PASSPHRASE}"
+      APP_ENCRYPTION_KEY: "${APP_ENCRYPTION_KEY}"
+      APP_ENCRYPTION_IV: "${APP_ENCRYPTION_IV}"
+      CORS_ALLOW_ORIGIN: "${CORS_ALLOW_ORIGIN}"
+    command: bash -c "mkdir -p var/uploads/avatares && chown -R www-data:www-data var && cd var &&  chmod 777 cache &&  chmod 777 log && chmod 777 uploads && apache2-foreground"
+    volumes:
+      - /var/www/html/var
+    # Volume mount condicional - só monta se API_VOLUME_SOURCE estiver definido e não vazio
+    # Isso é feito via extensão no docker-compose principal quando necessário

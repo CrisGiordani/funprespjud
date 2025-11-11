@@ -1,0 +1,7 @@
+export { default as RecuperacaoDeSenhaStep } from './RecuperacaoDeSenha'
+export { default as RedefinicaoDeSenhaStep } from './RedefinicaoDeSenha'
+export { default as VerificaCpfStep } from './VerificaCpf'
+export { default as PrimeiroAcessoStep } from './PrimeiroAcesso'
+export { default as SucessoStep } from './Sucesso'
+export { default as SucessoEmailPrimeiroAcessoStep } from './SucessoEmailPrimeiroAcesso'
+export { default as TokenExpiradoStep } from './TokenExpirado'

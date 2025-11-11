@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== USER DOMAIN =====
+enum RoleEnum {
+  USER_ADMIN
+  USER_OPERATOR
+  USER_PARTICIPANT
+  USER_SPONSOR
+}
+
+model User {
+  id          String      @id @default(uuid())
+  email       String      @unique
+  name        String
+  cpf         String      @unique
+  funpresp    Boolean     @default(false)
+  orgao       String?
+  password    String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  role        RoleEnum[]  @default([USER_PARTICIPANT])
+
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+
+  profile Profile?
+}
+
+enum EnumProfileEstadoCivil {
+  SOLTEIRO
+  CASADO
+  DIVORCIADO
+  VIUVO
+  OUTROS
+}
+
+enum EnumProfileSexo {
+  MASCULINO
+  FEMININO
+}
+
+model Profile {
+  id                    String      @id @default(uuid())
+  idUser                String      @unique
+  idTrust               String?
+
+  dtNascimento          DateTime
+  sexo                  EnumProfileSexo
+  telefone              String
+
+  endereco              String
+  cidade                String
+  bairro                String
+  estado                String
+  cep                   String
+
+  naturalidade          String
+  naturalidadeUf        String
+  nacionalidade         String
+
+  estadoCivil           EnumProfileEstadoCivil
+  politicamenteExposto  Boolean @default(false)
+
+  rg                    String
+  rgEmissor             String
+  rgUf                  String
+  rgEmissao             DateTime
+
+  nmMae                 String
+  nmPai                 String
+
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  @@map("profile")
+
+  user User @relation(fields: [idUser], references: [id])
+}
+
+model VerifyCodes {
+  id        String      @id @default(cuid())
+  cpf       String
+  expiresAt DateTime
+  createdAt DateTime    @default(now())
+
+  @@map("verify_codes")
+}
+
+model RefreshToken {
+  id          String    @id @default(cuid())
+  idUser      String    @unique
+  tokenHash   String
+  isValid     Boolean   @default(true)
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  revokedAt   DateTime?
+
+  ipAddress   String?
+  userAgent   String?
+
+  user        User      @relation(fields: [idUser], references: [id])
+
+  @@map("refresh_tokens")
+}
+
+// ===== PERMISSIONS DOMAIN =====
+model Permission {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}
+
+model RolePermission {
+  id           Int        @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  createdAt    DateTime   @default(now())
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
