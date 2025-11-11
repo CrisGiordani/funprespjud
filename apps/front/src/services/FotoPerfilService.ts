@@ -16,6 +16,7 @@ export const FotoPerfilService = {
       // Para outros erros (como 500), apenas loga mas não quebra o fluxo
       // Retorna null para que o componente mostre as iniciais
       console.error('Erro ao buscar foto de perfil:', error)
+      
       return null
     }
   },

@@ -21,7 +21,7 @@ export default function useUpdateParticipante() {
         setProfile({
           nome: response.data?.nome || profile.nome,
           email: response.data?.emailPrincipal || profile.email,
-          fotoPerfil
+          fotoPerfil: fotoPerfil || ''
         })
 
         if (response.success) {
