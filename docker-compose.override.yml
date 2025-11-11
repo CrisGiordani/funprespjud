@@ -1,0 +1,8 @@
+services:
+  front:
+    volumes:
+      - /root/FunprespJud/apps/front:/app
+  
+  api:
+    volumes:
+      - /root/FunprespJud/apps/api:/var/www/html

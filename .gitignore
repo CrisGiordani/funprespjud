@@ -1,0 +1,9 @@
+# Arquivo .env da raiz (gerado automaticamente pelo build.sh)
+# Contém variáveis sensíveis e não deve ser commitado
+.env
+
+# Arquivos temporários e de build
+*.log
+.DS_Store
+Thumbs.db
+

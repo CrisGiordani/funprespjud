@@ -1,0 +1,20 @@
+services:
+  front:
+    extends:
+      file: ./apps/front/docker-compose.yml
+      service: front_next
+    networks:
+      - internal
+    restart: always
+
+  api:
+    extends:
+      file: ./apps/api/docker-compose.yml
+      service: api_symfony
+    networks:
+      - internal
+    restart: always
+
+networks:
+  internal:
+    driver: bridge
