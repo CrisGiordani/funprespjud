@@ -5,7 +5,7 @@ services:
       service: front_next
     networks:
       - internal
-    restart: always
+    # restart: always
 
   api:
     extends:

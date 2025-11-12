@@ -27,7 +27,10 @@ FROM base AS builder
 ENV NODE_ENV=production
 ENV CI=true
 # Reinstall with scripts enabled to build native modules (bcrypt, etc.)
-RUN pnpm install --frozen-lockfile
+# Note: postinstall (build:icons) already ran in base stage, so we can skip it here
+RUN pnpm install --frozen-lockfile --ignore-scripts
+# Rebuild all native modules manually (bcrypt, etc.)
+RUN pnpm rebuild
 RUN pnpm build
 RUN pnpm prune --prod --ignore-scripts
 
