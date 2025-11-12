@@ -4,7 +4,7 @@ services:
       context: .
     container_name: api_symfony
     ports:
-      - "8000:80"
+      - "8000:8000"
     env_file:
       - .env
     environment:
