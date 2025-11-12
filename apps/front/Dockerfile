@@ -29,8 +29,8 @@ ENV CI=true
 # Reinstall with scripts enabled to build native modules (bcrypt, etc.)
 # Note: postinstall (build:icons) already ran in base stage, so we can skip it here
 RUN pnpm install --frozen-lockfile --ignore-scripts
-# Rebuild all native modules manually (bcrypt, etc.)
-RUN pnpm rebuild
+# Rebuild native modules that require compilation (bcrypt, etc.)
+RUN pnpm rebuild bcrypt
 RUN pnpm build
 RUN pnpm prune --prod --ignore-scripts
 
